@@ -1,0 +1,23 @@
+﻿  Source1.cpp
+c:\users\reaper\desktop\the beginning\school\ece 478 (robotics i)\ece-478\opencvtest\opencvtest\source1.cpp(92): warning C4101: 'TrackbarNamepink': unreferenced local variable
+c:\users\reaper\desktop\the beginning\school\ece 478 (robotics i)\ece-478\opencvtest\opencvtest\source1.cpp(52): warning C4101: 'TrackbarNamered': unreferenced local variable
+c:\users\reaper\desktop\the beginning\school\ece 478 (robotics i)\ece-478\opencvtest\opencvtest\source1.cpp(79): warning C4101: 'TrackbarNamegreen': unreferenced local variable
+c:\users\reaper\desktop\the beginning\school\ece 478 (robotics i)\ece-478\opencvtest\opencvtest\source1.cpp(65): warning C4101: 'TrackbarNameblue': unreferenced local variable
+c:\users\reaper\desktop\the beginning\school\ece 478 (robotics i)\ece-478\opencvtest\opencvtest\source1.cpp(116): warning C4267: 'initializing': conversion from 'size_t' to 'int', possible loss of data
+c:\users\reaper\desktop\the beginning\school\ece 478 (robotics i)\ece-478\opencvtest\opencvtest\source1.cpp(120): warning C4244: '=': conversion from 'double' to 'int', possible loss of data
+c:\users\reaper\desktop\the beginning\school\ece 478 (robotics i)\ece-478\opencvtest\opencvtest\source1.cpp(121): warning C4244: '=': conversion from 'double' to 'int', possible loss of data
+c:\users\reaper\desktop\the beginning\school\ece 478 (robotics i)\ece-478\opencvtest\opencvtest\source1.cpp(155): warning C4267: 'initializing': conversion from 'size_t' to 'int', possible loss of data
+c:\users\reaper\desktop\the beginning\school\ece 478 (robotics i)\ece-478\opencvtest\opencvtest\source1.cpp(164): warning C4244: '=': conversion from 'double' to 'int', possible loss of data
+c:\users\reaper\desktop\the beginning\school\ece 478 (robotics i)\ece-478\opencvtest\opencvtest\source1.cpp(165): warning C4244: '=': conversion from 'double' to 'int', possible loss of data
+c:\users\reaper\desktop\the beginning\school\ece 478 (robotics i)\ece-478\opencvtest\opencvtest\source1.cpp(255): warning C4244: '=': conversion from 'int' to 'float', possible loss of data
+c:\users\reaper\desktop\the beginning\school\ece 478 (robotics i)\ece-478\opencvtest\opencvtest\source1.cpp(256): warning C4244: '=': conversion from 'int' to 'float', possible loss of data
+c:\users\reaper\desktop\the beginning\school\ece 478 (robotics i)\ece-478\opencvtest\opencvtest\source1.cpp(260): warning C4244: '=': conversion from 'int' to 'float', possible loss of data
+c:\users\reaper\desktop\the beginning\school\ece 478 (robotics i)\ece-478\opencvtest\opencvtest\source1.cpp(261): warning C4244: '=': conversion from 'int' to 'float', possible loss of data
+c:\users\reaper\desktop\the beginning\school\ece 478 (robotics i)\ece-478\opencvtest\opencvtest\source1.cpp(268): warning C4244: '=': conversion from 'int' to 'float', possible loss of data
+c:\users\reaper\desktop\the beginning\school\ece 478 (robotics i)\ece-478\opencvtest\opencvtest\source1.cpp(271): warning C4244: '=': conversion from 'int' to 'float', possible loss of data
+c:\users\reaper\desktop\the beginning\school\ece 478 (robotics i)\ece-478\opencvtest\opencvtest\source1.cpp(278): warning C4244: '=': conversion from 'int' to 'float', possible loss of data
+c:\users\reaper\desktop\the beginning\school\ece 478 (robotics i)\ece-478\opencvtest\opencvtest\source1.cpp(281): warning C4244: '+=': conversion from 'double' to 'float', possible loss of data
+c:\users\reaper\desktop\the beginning\school\ece 478 (robotics i)\ece-478\opencvtest\opencvtest\source1.cpp(294): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
+c:\users\reaper\desktop\the beginning\school\ece 478 (robotics i)\ece-478\opencvtest\opencvtest\source1.cpp(319): warning C4101: 'e': unreferenced local variable
+  OPENCVTEST.vcxproj -> C:\Users\REAPER\Desktop\The Beginning\School\ECE 478 (Robotics I)\ECE-478\OPENCVTEST\x64\Debug\OPENCVTEST.exe
+  OPENCVTEST.vcxproj -> C:\Users\REAPER\Desktop\The Beginning\School\ECE 478 (Robotics I)\ECE-478\OPENCVTEST\x64\Debug\OPENCVTEST.pdb (Full PDB)
