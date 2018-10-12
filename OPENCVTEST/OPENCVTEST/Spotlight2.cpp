@@ -7,7 +7,6 @@
 #include "opencv2/video/background_segm.hpp"
 #include <opencv2/highgui.hpp>
 #include <opencv2/video.hpp>
-//#include <opencv2\opencv.hpp>
 #include <math.h>
 
 using namespace std;
@@ -17,20 +16,17 @@ int camera_number = 0;
 int object_found = 0;
 
 //threshold values
-int thresh = 102;
+int thresh = 10;
 int max_thresh = 255;
 int blurctr = 0; //blur iterations
 int maxblur = 15; //max blur iterations
-int d_ctr = 15; //dialte iterations
-int max_d_ctr = 50; //max dilate iterations
-int e_ctr = 3; //erode iterations
+int d_ctr = 0; //dialte iterations
+int max_d_ctr = 15; //max dilate iterations
+int e_ctr = 0; //erode iterations
 int max_e_ctr = 15; //max erode iterations
 int loopctr = 0;
 int maxloop = 15;
-int minarea = 7000;
-int maxarea = 100000;
-double testmax = .10 ;
-double test = .01;
+
 
 // Global variables
 Mat frame; //current frame
@@ -51,8 +47,6 @@ void createTrackbars() {
 	createTrackbar(" BER loop: ", "trackbars red", &loopctr, maxloop, my_trackbars);
 	createTrackbar(" Blur Size: ", "trackbars red", &blurctr, maxblur, my_trackbars);
 	createTrackbar(" Erode Size: ", "trackbars red", &e_ctr, max_e_ctr, my_trackbars);
-	createTrackbar("Min area: ", "trackbars red", &minarea, maxarea, my_trackbars);
-	createTrackbar("Min area: ", "trackbars red", &test, testmax, my_trackbars);
 
 }
 
@@ -64,8 +58,9 @@ void track_obstacle(int &x, int &y, Mat srcgray, Mat &cameraFeed) {
 	vector< vector<Point> > contours;
 	vector<Vec4i> hierarchy;
 	//find contours of filtered image using openCV findContours function
-	findContours(threshold_output, contours, hierarchy, CV_RETR_TREE, CV_CHAIN_APPROX_SIMPLE, Point(0, 0));
+	findContours(threshold_output, contours, hierarchy, CV_RETR_TREE, CV_CHAIN_APPROX_SIMPLE, Point(0, 0)); //
 
+	// Approximate contours to polygons + get bounding rects and circles
 	vector<vector<Point> > contours_poly(contours.size());
 	vector<Rect> boundRect(contours.size());
 	vector<Point2f>center(contours.size());
@@ -82,22 +77,22 @@ void track_obstacle(int &x, int &y, Mat srcgray, Mat &cameraFeed) {
 				boundRect[i] = boundingRect(Mat(contours_poly[i]));
 				minEnclosingCircle((Mat)contours_poly[i], center[i], radius[i]);
 			}
-			objectFound = true;
-			//refArea = area;
+				objectFound = true;
+				//refArea = area;
 		}
 		//let user know you found an object
 		if (objectFound == true) {
 			for (i = 0; i < contours.size(); i++) {
 				Moments moment = moments((cv::Mat)contours[i]);
-				if (moment.m00 > minarea) {
+				//if (moment.m00 > 1000) {
 					x = moment.m10 / moment.m00; //this is where the proram finds the x/y coordinates of the middle of the object
-					y = moment.m01 / moment.m00; //this is where the proram finds the x/y coordinates of the middle of the object
-					printf("%d %d\n", x, y);							 //send XY coordinates to UDP-LAND
-					fflush(stdout);
+					y = moment.m01 / moment.m00; //this is where the proram finds the x/y coordinates of the middle of the 
+				//	printf("%d  %d\n", x, y);
+					//send XY coordinates to UDP-LAND
 					drawContours(cameraFeed, contours_poly, i, 2, 1, 8, vector<Vec4i>(), 0, Point());
 					rectangle(cameraFeed, boundRect[i].tl(), boundRect[i].br(), Scalar(0, 255, 0), 2, 8, 0); //tl == top left, br == bottom right
 					circle(cameraFeed, center[i], (int)radius[i], Scalar(255, 0, 0), 2, 8, 0);
-				}
+				//}
 			}
 			putText(cameraFeed, "HUMAN DETECTED", Point(0, 50), 2, 1, Scalar(0, 255, 0), 2);
 			circle(cameraFeed, Point(x, y), 10, Scalar(255, 0, 0), 2);
@@ -127,14 +122,14 @@ int main()
 		int px = 0, py = 0; //pink x and y
 		capture.read(cameraFeed);
 		//	resize(cameraFeed, cameraFeed, Size(400, 300));
-		//convert image to gray
-		//cvtColor(cameraFeed, grayFeed, CV_BGR2GRAY);
-		//convert frame from BGR to HSV colorspace
-		//cvtColor(cameraFeed, HSV, COLOR_BGR2HSV);
-		//filter and store in threshold matrix
+					//convert image to gray
+			//cvtColor(cameraFeed, grayFeed, CV_BGR2GRAY);
+			//convert frame from BGR to HSV colorspace
+			//cvtColor(cameraFeed, HSV, COLOR_BGR2HSV);
+			//filter and store in threshold matrix
 
-		//		inRange(HSV, Scalar(H_MIN_green, S_MIN_green, V_MIN_green), Scalar(H_MAX_green, S_MAX_green, V_MAX_green), green_threshold);
-		//erode and dilate to clean up the image
+			//		inRange(HSV, Scalar(H_MIN_green, S_MIN_green, V_MIN_green), Scalar(H_MAX_green, S_MAX_green, V_MAX_green), green_threshold);
+			//erode and dilate to clean up the image
 		Mat erodeElement = getStructuringElement(MORPH_RECT, Size(3, 3));
 		Mat dilateElement = getStructuringElement(MORPH_RECT, Size(8, 8));
 
@@ -148,7 +143,7 @@ int main()
 		GaussianBlur(foregroundMask, foregroundMask, Size(11, 11), 3.5, 3.5);
 		threshold(foregroundMask, foregroundMask, thresh, 255, THRESH_BINARY);
 		foregroundImg = Scalar::all(0);
-
+		
 		for (int i = 0; i < e_ctr; ++i) {
 			dilate(foregroundMask, foregroundMask, dilateElement);
 		}
@@ -165,7 +160,7 @@ int main()
 		for (int i = 0; i < d_ctr; ++i) {
 			erode(foregroundMask, foregroundMask, erodeElement);
 		}
-
+	
 
 		img.copyTo(foregroundImg, foregroundMask);
 		bg_model->getBackgroundImage(backgroundImage);
@@ -185,53 +180,53 @@ int main()
 		track_obstacle(rx, ry, foregroundMask, cameraFeed);
 
 		//get distance beween points
-		//		float a, b, dist_gp;
-		//		a = gx - px;
-		//		b = gy - py;
-		//		dist_gp = sqrt((a*a) + (b*b));
+//		float a, b, dist_gp;
+//		a = gx - px;
+//		b = gy - py;
+//		dist_gp = sqrt((a*a) + (b*b));
 
-		//		float c, d, dist_gr;
-		//		c = gx - rx;
-		//		d = gy - ry;
-		//		dist_gr = sqrt((c*c) + (d*d));
+//		float c, d, dist_gr;
+//		c = gx - rx;
+//		d = gy - ry;
+//		dist_gr = sqrt((c*c) + (d*d));
 
 		//get angle between points
-		//		float angle_gp = 0;
+//		float angle_gp = 0;
 
-		//		if (a == 0 && b != 0) { // on x-axis
-		//			angle_gp = (b < 0) ? 180 : 0;
-		//		}
-		//		else if (a != 0 && b == 0) { // on y-axis
-		//			angle_gp = (a < 0) ? -90 : 90;
-		//		}
-		//		else { // normal move
-		//			if (b > 0) { // correction factor to scale with OpenCV headings
-		//				angle_gp = 0;
-		//			}
-		//			else {
-		//				angle_gp = (a > 0) ? 180 : -180;
-		//			}
-		//printf("b = %f\n", b);
-		//			angle_gp += (atan(a / b) * 180.0) / 3.141592654;
-		//			angle_gp -= (angle_gp > 180) ? 360 : 0;
-		//			angle_gp += (angle_gp < -180) ? 360 : 0;
-		//		}
+//		if (a == 0 && b != 0) { // on x-axis
+//			angle_gp = (b < 0) ? 180 : 0;
+//		}
+//		else if (a != 0 && b == 0) { // on y-axis
+//			angle_gp = (a < 0) ? -90 : 90;
+//		}
+//		else { // normal move
+//			if (b > 0) { // correction factor to scale with OpenCV headings
+//				angle_gp = 0;
+//			}
+//			else {
+//				angle_gp = (a > 0) ? 180 : -180;
+//			}
+			//printf("b = %f\n", b);
+//			angle_gp += (atan(a / b) * 180.0) / 3.141592654;
+//			angle_gp -= (angle_gp > 180) ? 360 : 0;
+//			angle_gp += (angle_gp < -180) ? 360 : 0;
+//		}
 		/*
 		if (b != 0)
 		angle_gp = atan(a / b);
 		angle_gp = (angle_gp * 180) / 3.141592654;
 		*/
 
-		//		float angle_gr = 0;
-		//		if (d != 0)
-		//			angle_gr = atan(c / d);
-		//		angle_gr = (angle_gr * 180) / 3.141592654;
-		//
+//		float angle_gr = 0;
+//		if (d != 0)
+//			angle_gr = atan(c / d);
+//		angle_gr = (angle_gr * 180) / 3.141592654;
+//
 		//cout << "\n The hypotenuse length is: " << a << " " << b << " " << (result);
-		//		printf("GRN:(%d,%d)\tPNK:(%d,%d)\tRED:(%d,%d)\tBLU:(%d,%d)\tG-P:(%d,%d)\tAngGP:%.1f%c\tDstGP:%.1f\tG-P:(%d,%d)\tAngGR:%.1f%c\tDstGR:%.1f\n", gx, gy, px, py, rx, ry, bx, by, gx - px, gy - py, angle_gp, 248, dist_gp, rx - bx, ry - by, angle_gr, 248, dist_gr); //subtrace pink coordinates from pink, print the delta
-		//open all windows
+//		printf("GRN:(%d,%d)\tPNK:(%d,%d)\tRED:(%d,%d)\tBLU:(%d,%d)\tG-P:(%d,%d)\tAngGP:%.1f%c\tDstGP:%.1f\tG-P:(%d,%d)\tAngGR:%.1f%c\tDstGR:%.1f\n", gx, gy, px, py, rx, ry, bx, by, gx - px, gy - py, angle_gp, 248, dist_gp, rx - bx, ry - by, angle_gr, 248, dist_gr); //subtrace pink coordinates from pink, print the delta
+																																																																		  //open all windows
 		imshow("camera_feed", cameraFeed);
-		//		imshow("red_threshold", grayFeed);
+//		imshow("red_threshold", grayFeed);
 		if (first_loop == 0) {
 			first_loop = 1;
 			moveWindow("camera_feed", 600, 330);
